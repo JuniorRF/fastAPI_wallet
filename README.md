@@ -2,4 +2,4 @@
 Тестовое задание OOO "ИТК"
 
 
-запуск ```python main.py```
+запуск ```uvicorn backend.main:app```

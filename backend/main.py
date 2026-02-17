@@ -1,12 +1,9 @@
 from fastapi import FastAPI
 
-from api.basic import router
-import uvicorn
-from core.config import Settings
+# from api.basic import router
+from backend.core.config import settings
 
-app = FastAPI() #(docs_url=None, redoc_url=None)
+app = FastAPI(title=settings.app_title)  #(docs_url=None, redoc_url=None)
+print(settings)
+# app.include_router(router)
 
-app.include_router(router)
-
-if __name__ == '__main__':
-    uvicorn.run('main:app', reload=True)
