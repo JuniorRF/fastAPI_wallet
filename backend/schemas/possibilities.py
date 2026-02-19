@@ -25,7 +25,6 @@ class Person(BaseModel):
         title = 'Класс для приветствия'
         str_min_length = 2
 
-    
     @field_validator('name', 'surname')
     def name_cant_be_numeric(cls, value: str):
         if value.isnumeric():

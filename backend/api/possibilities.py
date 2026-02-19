@@ -34,7 +34,7 @@ def hello(
         result += ', ' + person.education_level.lower()
     if person.is_staff:
         result += ', сотрудник'
-    return {'Hello': result} 
+    return {'Hello': result}
 
 
 @router.get('/')
