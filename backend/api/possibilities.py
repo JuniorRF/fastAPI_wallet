@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Query, File, Form, UploadFile, Body
+from fastapi import APIRouter, Query, File, Form, UploadFile
 
-from schemas.basic import Person
+from schemas.possibilities import Person
 
 
 router = APIRouter()
@@ -20,14 +20,13 @@ def login(
 
 
 @router.post('/hello')
-def hello(
-    person: Person ) -> dict[str, str]:
+def hello(person: Person) -> dict[str, str]:
     if isinstance(person.surname, list):
         surnames = ' '.join(person.surname)
     else:
         surnames = person.surname
     result = ' '.join([person.name, surnames])
-    result = result.title()    
+    result = result.title()
     if person.age is not None:
         result += ', ' + str(person.age)
     if person.education_level is not None:
