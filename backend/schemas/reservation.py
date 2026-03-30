@@ -3,17 +3,21 @@ from datetime import datetime, timedelta
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 
+FROM_TIME = (
+    datetime.now() + timedelta(minutes=10)
+).isoformat(timespec='minutes')
+
+TO_TIME = (
+    datetime.now() + timedelta(hours=1)
+).isoformat(timespec='minutes')
+
+
 class ReservationBase(BaseModel):
-    reservation_start: datetime = Field(
-        default=datetime.now(),
-        title="Начало времени бронирования",
-        description="Начало времени бронирования"
-    )
-    to_reserve: datetime = Field(
-        default=datetime.now() + timedelta(minutes=30),
-        title="Конец времени бронирования",
-        description="Конец времени бронирования"
-    )
+    from_reserve: datetime = Field(..., example=FROM_TIME)
+    to_reserve: datetime = Field(..., example=TO_TIME)
+
+    class Config:
+        extra = 'forbid'
 
 
 class ReservationUpdate(ReservationBase):
@@ -27,7 +31,8 @@ class ReservationUpdate(ReservationBase):
             )
         return value
 
-    @model_validator(skip_on_failure=True)
+    @model_validator(mode='before')
+    @classmethod
     def check_from_reserve_before_to_reserve(cls, values):
         if values['from_reserve'] >= values['to_reserve']:
             raise ValueError(
@@ -36,7 +41,7 @@ class ReservationUpdate(ReservationBase):
             )
         return values
 
-    @field_validator('reservation_start')
+    @field_validator('to_reserve')
     def reservation_start_cannot_be_null(cls, value):
         if value is None or value == '':
             raise ValueError(

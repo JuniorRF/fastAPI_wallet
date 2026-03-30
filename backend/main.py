@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 
 from backend.core.config import settings
-from backend.api.meeting_room import router
+from backend.api.routers import main_router
 
 app = FastAPI(
     title=settings.app_title,
@@ -12,4 +12,4 @@ app = FastAPI(
 )
 
 
-app.include_router(router)
+app.include_router(main_router)
