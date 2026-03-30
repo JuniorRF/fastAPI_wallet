@@ -8,6 +8,7 @@ class Settings(BaseSettings):
     docs_url: str = '/docs'
     redoc_url: str = '/redoc'
     database_url: str
+    secret: str = 'SECRET'
 
     class Config:
         env_file = '.env'

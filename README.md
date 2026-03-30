@@ -12,4 +12,4 @@
 
 ### Миграции alembic
 ```alembic revision --autogenerate -m "комментарий для удобства"```
-```alembic haed``` 
+```alembic heads``` 

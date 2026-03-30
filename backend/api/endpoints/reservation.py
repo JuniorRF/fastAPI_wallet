@@ -2,10 +2,12 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from backend.api.endpoints.validators import (
-    check_meeting_room_exists, check_name_duplicate, check_reservation_before_edit, check_reservation_intersections)
+    check_meeting_room_exists,
+    check_reservation_before_edit, check_reservation_intersections)
 from backend.core.db import get_async_session
 from backend.crud.reservation import reservation_crud
-from backend.schemas.reservation import ReservationCreate, ReservationDB, ReservationUpdate
+from backend.schemas.reservation import (
+    ReservationCreate, ReservationDB, ReservationUpdate)
 
 
 router = APIRouter()
