@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -6,8 +7,10 @@ from backend.api.endpoints.validators import (
     check_reservation_before_edit, check_reservation_intersections)
 from backend.core.db import get_async_session
 from backend.crud.reservation import reservation_crud
+from backend.core.user import current_superuser, current_user
+from backend.models.user import User
 from backend.schemas.reservation import (
-    ReservationCreate, ReservationDB, ReservationUpdate)
+    MyReservationDB, ReservationCreate, ReservationDB, ReservationUpdate)
 
 
 router = APIRouter()
@@ -22,6 +25,7 @@ router = APIRouter()
 async def create_reservation(
     reservation: ReservationCreate,
     session: AsyncSession = Depends(get_async_session),
+    user: User = Depends(current_user),
 ) -> None:
     await check_meeting_room_exists(
         reservation.meetingroom_id, session
@@ -29,16 +33,16 @@ async def create_reservation(
     await check_reservation_intersections(
         **reservation.dict(), session=session
     )
-    print(reservation)
     new_reservation = await reservation_crud.create(
-        reservation, session
+        reservation, session, user
     )
     return new_reservation
 
 
 @router.get('/', response_model=list[ReservationDB])
 async def get_all_reservations(
-        session: AsyncSession = Depends(get_async_session)
+        session: AsyncSession = Depends(get_async_session),
+        dependencies=[Depends(current_superuser)],
 ):
     reservations = await reservation_crud.get_multi(session)
     return reservations
@@ -81,3 +85,15 @@ async def update_reservation(
         session=session,
     )
     return reservation
+
+
+@router.get(
+    '/my_reservations',
+    response_model=list[MyReservationDB],
+)
+async def get_my_reservations(
+    user: User = Depends(current_user),
+    session: AsyncSession = Depends(get_async_session),
+):
+    reservations = await reservation_crud.get_by_user(user, session)
+    return reservations
